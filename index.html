@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ABU ADZKA Dashboard Custom</title>
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="ABU ADZKA dashboard custom untuk absensi, inventaris, stock barang, dan laporan keuangan.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ABU ADZKA">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+
+  <main id="loginScreen" class="login-shell">
+    <section class="login-stage">
+      <div class="login-brand">
+        <img src="assets/abu-adzka-logo.png" alt="Logo Abu Adzka">
+        <div>
+          <span>ABU ADZKA</span>
+          <small>Spesialis Desain Dashboard Custom</small>
+        </div>
+      </div>
+      <div class="login-visual">
+        <div class="orbital-card card-one">
+          <strong>99%</strong>
+          <span>Uptime Sistem</span>
+        </div>
+        <div class="orbital-card card-two">
+          <strong>5</strong>
+          <span>Sub Dashboard</span>
+        </div>
+        <div class="hologram">
+          <img src="assets/abu-adzka-logo.png" alt="">
+        </div>
+      </div>
+      <div class="login-copy">
+        <p class="eyebrow">Premium Business Intelligence</p>
+        <h1>ABU ADZKA</h1>
+        <p>Dashboard custom modern untuk monitoring operasional, absensi, inventaris, stok, dan keuangan perusahaan dalam satu ruang kerja.</p>
+      </div>
+    </section>
+
+    <section class="login-panel glass-panel">
+      <div class="panel-head">
+        <span class="status-dot"></span>
+        <span>Secure Access</span>
+      </div>
+      <h2>Masuk Dashboard</h2>
+      <p class="muted">Gunakan akun Admin, Staff, atau Owner.</p>
+      <form id="loginForm">
+        <label>
+          <span>User</span>
+          <input id="username" type="text" autocomplete="username" placeholder="Admin / Staff / Owner" required>
+        </label>
+        <label>
+          <span>Password</span>
+          <input id="password" type="password" autocomplete="current-password" placeholder="Masukkan password" required>
+        </label>
+        <button class="primary-btn" type="submit">Masuk</button>
+        <p id="loginError" class="error-text" aria-live="polite"></p>
+      </form>
+      <div class="credential-grid">
+        <button data-login="Admin" data-pass="123456">Admin</button>
+        <button data-login="Staff" data-pass="111111">Staff</button>
+        <button data-login="Owner" data-pass="000000">Owner</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="appShell" class="app-shell hidden">
+    <aside class="sidebar">
+      <div class="brand-lockup">
+        <img src="assets/abu-adzka-logo.png" alt="Logo Abu Adzka">
+        <div>
+          <strong>ABU ADZKA</strong>
+          <span>Dashboard Custom</span>
+        </div>
+      </div>
+      <nav class="nav-list" aria-label="Menu dashboard">
+        <button class="nav-item active" data-view="main"><span class="icon icon-dashboard" aria-hidden="true"></span>Dashboard Utama</button>
+        <button class="nav-item" data-view="attendance"><span class="icon icon-attendance" aria-hidden="true"></span>Absensi Karyawan</button>
+        <button class="nav-item" data-view="inventory"><span class="icon icon-inventory" aria-hidden="true"></span>Daftar Inventaris Perusahaan</button>
+        <button class="nav-item" data-view="stock"><span class="icon icon-stock" aria-hidden="true"></span>Stock Barang</button>
+        <button class="nav-item" data-view="finance"><span class="icon icon-finance" aria-hidden="true"></span>Laporan Keuangan</button>
+      </nav>
+      <div class="profile-card">
+        <img src="assets/abu-adzka-logo.png" alt="">
+        <div>
+          <strong id="profileName">Admin</strong>
+          <span id="profileRole">Administrator</span>
+        </div>
+      </div>
+      <button id="logoutBtn" class="ghost-btn">Keluar</button>
+    </aside>
+
+    <section class="workspace">
+      <header class="topbar">
+        <button id="menuToggle" class="icon-btn menu-lines" aria-label="Buka menu"><span></span><span></span><span></span></button>
+        <div class="title-block">
+          <p id="roleCaption">Administrator Workspace</p>
+          <h2 id="viewTitle">Dashboard Utama</h2>
+        </div>
+        <div class="top-actions">
+          <input id="globalSearch" type="search" placeholder="Cari data, menu, laporan...">
+          <button id="themeToggle" class="icon-btn theme-glyph" aria-label="Ganti tema"><span></span></button>
+          <button id="exportBtn" class="primary-btn small">Ekspor</button>
+        </div>
+      </header>
+
+      <section id="permissionNotice" class="permission-notice hidden"></section>
+
+      <section id="view-main" class="view active">
+        <div class="metric-grid">
+          <article class="metric-card blue">
+            <span>Total Karyawan</span>
+            <strong id="metricEmployees">0</strong>
+            <small>+12% dari bulan lalu</small>
+          </article>
+          <article class="metric-card gold">
+            <span>Total Inventaris</span>
+            <strong id="metricInventory">0</strong>
+            <small>+8% aset aktif</small>
+          </article>
+          <article class="metric-card coral">
+            <span>Total Stock Barang</span>
+            <strong id="metricStock">0</strong>
+            <small>+15% perputaran barang</small>
+          </article>
+          <article class="metric-card mint">
+            <span>Laba Bulan Ini</span>
+            <strong id="metricProfit">Rp 0</strong>
+            <small>Target tercapai</small>
+          </article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="panel chart-panel">
+            <div class="section-head">
+              <div>
+                <h3>Ringkasan Aktivitas</h3>
+                <p>Performa operasional 7 hari terakhir</p>
+              </div>
+              <select>
+                <option>7 Hari Terakhir</option>
+                <option>30 Hari Terakhir</option>
+              </select>
+            </div>
+            <div class="line-chart">
+              <svg viewBox="0 0 720 260" role="img" aria-label="Grafik aktivitas">
+                <defs>
+                  <linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stop-color="#3c7bff" stop-opacity=".42"/>
+                    <stop offset="100%" stop-color="#3c7bff" stop-opacity="0"/>
+                  </linearGradient>
+                  <filter id="lineGlow" x="-20%" y="-30%" width="140%" height="170%">
+                    <feGaussianBlur stdDeviation="5" result="blur"/>
+                    <feMerge>
+                      <feMergeNode in="blur"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
+                </defs>
+                <path class="grid-line" d="M20 48H700M20 108H700M20 168H700M20 228H700"/>
+                <path class="area" d="M20 216 C90 94 126 142 170 82 C220 12 248 208 298 120 C348 28 382 140 430 160 C498 188 522 78 575 96 C626 114 646 60 700 24 L700 238 L20 238 Z"/>
+                <path class="stroke-shadow" d="M20 216 C90 94 126 142 170 82 C220 12 248 208 298 120 C348 28 382 140 430 160 C498 188 522 78 575 96 C626 114 646 60 700 24"/>
+                <path class="stroke" d="M20 216 C90 94 126 142 170 82 C220 12 248 208 298 120 C348 28 382 140 430 160 C498 188 522 78 575 96 C626 114 646 60 700 24"/>
+              </svg>
+            </div>
+          </article>
+          <article class="panel activity-panel">
+            <div class="section-head">
+              <div>
+                <h3>Aktivitas Terbaru</h3>
+                <p>Update sistem otomatis</p>
+              </div>
+            </div>
+            <div id="activityList" class="activity-list"></div>
+          </article>
+        </div>
+
+        <div class="mini-grid">
+          <article class="panel radial-panel">
+            <h3>Persentase Kehadiran</h3>
+            <div class="radial" style="--value: 92"><strong>92%</strong><span>Bulan ini</span></div>
+          </article>
+          <article class="panel low-stock-panel">
+            <h3>Stock Menipis</h3>
+            <div id="lowStockList"></div>
+          </article>
+          <article class="panel donut-panel">
+            <h3>Pengeluaran Bulan Ini</h3>
+            <div class="donut"><strong>Rp 85,4 Jt</strong><span>Total</span></div>
+          </article>
+          <article class="panel histogram-panel">
+            <h3>Performa Mingguan</h3>
+            <div class="histogram-3d" aria-label="Histogram performa mingguan">
+              <span style="--h: 46%; --c: #3168ff"><i>Sen</i></span>
+              <span style="--h: 64%; --c: #28c8ff"><i>Sel</i></span>
+              <span style="--h: 52%; --c: #d7a44b"><i>Rab</i></span>
+              <span style="--h: 78%; --c: #28c08b"><i>Kam</i></span>
+              <span style="--h: 90%; --c: #ff6177"><i>Jum</i></span>
+              <span style="--h: 68%; --c: #7b61ff"><i>Sab</i></span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="view-attendance" class="view"></section>
+      <section id="view-inventory" class="view"></section>
+      <section id="view-stock" class="view"></section>
+      <section id="view-finance" class="view"></section>
+    </section>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
