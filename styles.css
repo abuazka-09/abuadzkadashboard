@@ -424,6 +424,21 @@ input[type="file"]::file-selector-button {
   background: currentColor;
 }
 
+.icon-sales::before {
+  width: 16px;
+  height: 14px;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+}
+
+.icon-sales::after {
+  width: 13px;
+  height: 9px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: rotate(-38deg) translate(1px, -1px);
+}
+
 .icon-finance::before {
   width: 13px;
   height: 16px;
@@ -821,7 +836,7 @@ input[type="file"]::file-selector-button {
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 720px;
+  min-width: 920px;
 }
 th, td {
   padding: 14px 12px;
@@ -870,6 +885,20 @@ td strong { display: block; }
   background: rgba(99, 112, 139, .1);
   font-size: 12px;
   font-weight: 800;
+  white-space: nowrap;
+}
+
+.photo-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 7px 11px;
+  border-radius: 999px;
+  color: #3168ff;
+  background: rgba(49, 104, 255, .1);
+  font-size: 12px;
+  font-weight: 900;
+  text-decoration: none;
   white-space: nowrap;
 }
 

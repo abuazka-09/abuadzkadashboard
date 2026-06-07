@@ -9,6 +9,7 @@ const titles = {
   attendance: "Absensi Karyawan",
   inventory: "Daftar Inventaris Perusahaan",
   stock: "Stock Barang",
+  sales: "Laporan Penjualan",
   finance: "Laporan Keuangan"
 };
 
@@ -31,6 +32,11 @@ const starterData = {
     { id: 3, item: "Kertas A4 Premium", sku: "STK-103", category: "ATK", qty: 58, min: 30, unit: "Rim", supplier: "PaperOne" },
     { id: 4, item: "Tinta Printer Hitam", sku: "STK-104", category: "ATK", qty: 14, min: 8, unit: "Botol", supplier: "OfficeHub" }
   ],
+  sales: [
+    { id: 1, saleId: "INV-2026-001", productDesc: "Dashboard Custom Premium", vendorName: "Markaz Dakwah Digital", hpp: 8500000, sellPrice: 15000000, volume: 2, totalSales: 30000000, vendorPayment: 17000000, balance: 13000000 },
+    { id: 2, saleId: "INV-2026-002", productDesc: "Paket PWA Company Profile", vendorName: "Creative Partner", hpp: 3200000, sellPrice: 6500000, volume: 3, totalSales: 19500000, vendorPayment: 9600000, balance: 9900000 },
+    { id: 3, saleId: "INV-2026-003", productDesc: "Maintenance Dashboard Bulanan", vendorName: "Internal Team", hpp: 1200000, sellPrice: 3500000, volume: 4, totalSales: 14000000, vendorPayment: 4800000, balance: 9200000 }
+  ],
   finance: [
     { id: 1, date: "2026-06-01", type: "Pemasukan", category: "Project Dashboard", desc: "DP dashboard custom", amount: 45000000 },
     { id: 2, date: "2026-06-03", type: "Pengeluaran", category: "Operasional", desc: "Lisensi software desain", amount: 6200000 },
@@ -39,6 +45,8 @@ const starterData = {
   ]
 };
 
+const appConfig = window.ABU_ADZKA_CONFIG || {};
+const onlineEnabled = Boolean(appConfig.ONLINE_MODE && appConfig.APPS_SCRIPT_URL);
 let state = JSON.parse(localStorage.getItem("abuAdzkaDashboardState") || "null") || starterData;
 let currentUser = JSON.parse(sessionStorage.getItem("abuAdzkaSession") || "null");
 let activeView = "main";
@@ -48,6 +56,48 @@ const $ = (selector) => document.querySelector(selector);
 
 function saveState() {
   localStorage.setItem("abuAdzkaDashboardState", JSON.stringify(state));
+}
+
+async function apiRequest(action, payload = {}) {
+  if (!onlineEnabled) return null;
+  const response = await fetch(appConfig.APPS_SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ action, ...payload })
+  });
+  const json = await response.json();
+  if (!json.ok) throw new Error(json.error || "Gagal menghubungi database online.");
+  return json;
+}
+
+async function syncFromOnline() {
+  if (!onlineEnabled) return;
+  try {
+    const json = await apiRequest("list");
+    if (json.data) {
+      state = { ...starterData, ...json.data };
+      saveState();
+      render();
+      showToast("Mode online aktif. Data tersinkron dari Google Sheets.");
+    }
+  } catch (error) {
+    showToast("Mode offline aktif sementara. Sinkron Google Sheets belum tersedia.");
+  }
+}
+
+async function persistOnline(kind, record, mode) {
+  if (!onlineEnabled) return;
+  await apiRequest("upsert", { kind, record, mode });
+}
+
+async function deleteOnline(kind, id) {
+  if (!onlineEnabled) return;
+  await apiRequest("delete", { kind, id });
+}
+
+async function resetOnline(kind) {
+  if (!onlineEnabled) return;
+  await apiRequest("reset", { kind });
 }
 
 function money(value) {
@@ -87,9 +137,9 @@ function setNotice() {
     return;
   }
   const text = {
-    Admin: "Mode Admin aktif: Anda dapat menambah, mengedit, dan menghapus seluruh data.",
-    Staff: "Mode Staff aktif: Anda dapat menginput data baru. Edit dan hapus data dikunci untuk administrator.",
-    Owner: "Mode Owner aktif: seluruh data tersedia sebagai monitoring read-only."
+    Admin: `Mode Admin aktif: Anda dapat menambah, mengedit, dan menghapus seluruh data. ${onlineEnabled ? "Database Google Sheets aktif." : "Mode offline/local aktif."}`,
+    Staff: `Mode Staff aktif: Anda dapat menginput data baru. Edit dan hapus data dikunci untuk administrator. ${onlineEnabled ? "Database Google Sheets aktif." : "Mode offline/local aktif."}`,
+    Owner: `Mode Owner aktif: seluruh data tersedia sebagai monitoring read-only. ${onlineEnabled ? "Database Google Sheets aktif." : "Mode offline/local aktif."}`
   }[currentUser.name];
   notice.textContent = text;
   notice.classList.remove("hidden");
@@ -106,6 +156,7 @@ function login(user, pass) {
   $("#profileRole").textContent = credentials[normalized].label;
   $("#roleCaption").textContent = credentials[normalized].label;
   render();
+  syncFromOnline();
   return true;
 }
 
@@ -135,6 +186,7 @@ function render() {
   if (activeView === "attendance") renderAttendance();
   if (activeView === "inventory") renderInventory();
   if (activeView === "stock") renderStock();
+  if (activeView === "sales") renderSales();
   if (activeView === "finance") renderFinance();
 }
 
@@ -142,7 +194,8 @@ function renderDashboard() {
   const uniqueEmployees = new Set(state.attendance.map((row) => row.name)).size + 124;
   const inventoryTotal = state.inventory.length + 348;
   const stockTotal = state.stock.reduce((sum, row) => sum + Number(row.qty), 0) + 1160;
-  const income = state.finance.filter((row) => row.type === "Pemasukan").reduce((sum, row) => sum + Number(row.amount), 0);
+  const salesProfit = (state.sales || []).reduce((sum, row) => sum + Number(row.balance || 0), 0);
+  const income = state.finance.filter((row) => row.type === "Pemasukan").reduce((sum, row) => sum + Number(row.amount), 0) + salesProfit;
   const expense = state.finance.filter((row) => row.type === "Pengeluaran").reduce((sum, row) => sum + Number(row.amount), 0);
 
   $("#metricEmployees").textContent = uniqueEmployees;
@@ -245,12 +298,20 @@ function renderAttendance() {
           <td><span class="status-pill ${row.status === "Alpha" ? "bad" : row.status === "Izin" || row.status === "Sakit" ? "warn" : ""}">${row.status}</span></td>
           <td>${row.in || "-"}</td>
           <td>${row.out || "-"}</td>
-          <td>${row.photo ? `<img class="attendance-photo" src="${row.photo}" alt="Bukti absensi ${row.name}">` : `<span class="photo-empty">Belum ada</span>`}</td>
+          <td>${photoCell(row)}</td>
           <td>${row.note || "-"}</td>
           <td>${actionButtons("attendance", row.id)}</td>
         </tr>`).join("")}</tbody>
     </table>
   `);
+}
+
+function photoCell(row) {
+  if (!row.photo) return `<span class="photo-empty">Belum ada</span>`;
+  if (String(row.photo).startsWith("data:image")) {
+    return `<img class="attendance-photo" src="${row.photo}" alt="Bukti absensi ${row.name}">`;
+  }
+  return `<a class="photo-link" href="${row.photo}" target="_blank" rel="noopener">Lihat Foto</a>`;
 }
 
 function renderInventory() {
@@ -303,6 +364,62 @@ function renderStock() {
           <td>${actionButtons("stock", row.id)}</td>
         </tr>`).join("")}</tbody>
     </table>
+  `);
+}
+
+function calculateSale(record) {
+  const hpp = Number(record.hpp || 0);
+  const sellPrice = Number(record.sellPrice || 0);
+  const volume = Number(record.volume || 0);
+  return {
+    ...record,
+    hpp,
+    sellPrice,
+    volume,
+    totalSales: sellPrice * volume,
+    vendorPayment: hpp * volume,
+    balance: (sellPrice * volume) - (hpp * volume)
+  };
+}
+
+function renderSales() {
+  const rows = (state.sales || []).map(calculateSale);
+  const totalSales = rows.reduce((sum, row) => sum + Number(row.totalSales), 0);
+  const totalVendor = rows.reduce((sum, row) => sum + Number(row.vendorPayment), 0);
+  const totalProfit = rows.reduce((sum, row) => sum + Number(row.balance), 0);
+  const margin = totalSales > 0 ? Math.round((totalProfit / totalSales) * 100) : 0;
+
+  $("#view-sales").innerHTML = pageShell("sales", "Input Laporan Penjualan", "Catat transaksi, modal vendor, total penjualan, dan profit bersih.", [
+    { name: "saleId", label: "ID", placeholder: "INV-2026-001" },
+    { name: "productDesc", label: "Deskripsi Produk", placeholder: "Nama produk atau jasa" },
+    { name: "vendorName", label: "Nama Vendor", placeholder: "Supplier / vendor produk" },
+    { name: "hpp", label: "HPP", type: "number", placeholder: "0" },
+    { name: "sellPrice", label: "Harga Jual", type: "number", placeholder: "0" },
+    { name: "volume", label: "Volume", type: "number", placeholder: "0" }
+  ], `
+    <table>
+      <thead><tr><th>No.</th><th>ID</th><th>Deskripsi Produk</th><th>Nama Vendor</th><th>HPP</th><th>Harga Jual</th><th>Volume</th><th>Total Penjualan</th><th>Pembayaran Vendor</th><th>Saldo Akhir</th><th>Aksi</th></tr></thead>
+      <tbody>${rows.map((row, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td><strong>${row.saleId}</strong></td>
+          <td>${row.productDesc}</td>
+          <td>${row.vendorName}</td>
+          <td>${money(row.hpp)}</td>
+          <td>${money(row.sellPrice)}</td>
+          <td>${row.volume}</td>
+          <td><strong>${money(row.totalSales)}</strong></td>
+          <td>${money(row.vendorPayment)}</td>
+          <td><span class="status-pill ${row.balance < 0 ? "bad" : "info"}">${money(row.balance)}</span></td>
+          <td>${actionButtons("sales", row.id)}</td>
+        </tr>`).join("")}</tbody>
+    </table>
+  `, `
+    <div class="metric-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:16px">
+      <article class="metric-card blue"><span>Total Penjualan</span><strong>${shortMoney(totalSales)}</strong><small>Omzet customer</small></article>
+      <article class="metric-card gold"><span>Pembayaran Vendor</span><strong>${shortMoney(totalVendor)}</strong><small>Total modal</small></article>
+      <article class="metric-card mint"><span>Saldo Akhir</span><strong>${shortMoney(totalProfit)}</strong><small>Margin ${margin}%</small></article>
+    </div>
   `);
 }
 
@@ -364,11 +481,18 @@ async function submitForm(form) {
   ["value", "qty", "min", "amount"].forEach((field) => {
     if (record[field] !== undefined) record[field] = Number(record[field] || 0);
   });
+  if (kind === "sales") {
+    ["hpp", "sellPrice", "volume"].forEach((field) => record[field] = Number(record[field] || 0));
+    Object.assign(record, calculateSale(record));
+  }
   if (editing && canEditRows()) {
     state[kind] = state[kind].map((row) => row.id === editing.id ? { ...row, ...record } : row);
+    try { await persistOnline(kind, { ...editing, ...record }, "edit"); } catch (error) { showToast("Simpan online gagal, data lokal tetap tersimpan."); }
     showToast("Data berhasil diperbarui.");
   } else {
-    state[kind].unshift({ id: Date.now(), ...record });
+    const newRecord = { id: Date.now(), ...record };
+    state[kind].unshift(newRecord);
+    try { await persistOnline(kind, newRecord, "add"); } catch (error) { showToast("Simpan online gagal, data lokal tetap tersimpan."); }
     showToast("Data baru berhasil ditambahkan.");
   }
   editing = null;
@@ -376,7 +500,7 @@ async function submitForm(form) {
   render();
 }
 
-function handleTableAction(target) {
+async function handleTableAction(target) {
   const editTarget = target.closest("[data-edit]");
   const deleteTarget = target.closest("[data-delete]");
   const resetTarget = target.closest("[data-reset]");
@@ -392,6 +516,7 @@ function handleTableAction(target) {
     if (!canEditRows()) return showToast("Reset data hanya untuk Admin.");
     state[kind] = structuredClone(starterData[kind]);
     saveState();
+    try { await resetOnline(kind); } catch (error) { showToast("Reset online gagal, data lokal tetap diperbarui."); }
     render();
     showToast("Data demo dikembalikan.");
     return;
@@ -410,6 +535,7 @@ function handleTableAction(target) {
     const [kind, id] = deleteTarget.dataset.delete.split(":");
     state[kind] = state[kind].filter((row) => row.id !== Number(id));
     saveState();
+    try { await deleteOnline(kind, Number(id)); } catch (error) { showToast("Hapus online gagal, data lokal tetap diperbarui."); }
     render();
     showToast("Data dihapus.");
   }
@@ -473,6 +599,7 @@ if (currentUser) {
   $("#profileRole").textContent = credentials[currentUser.name].label;
   $("#roleCaption").textContent = credentials[currentUser.name].label;
   render();
+  syncFromOnline();
 }
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {

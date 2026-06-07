@@ -1,0 +1,57 @@
+SETUP GOOGLE SHEETS + APPS SCRIPT
+ABU ADZKA Dashboard Custom
+
+Tujuan:
+- Data dashboard tersimpan online di Google Sheets.
+- Foto absensi tersimpan di Google Drive.
+- Dashboard GitHub Pages tetap menjadi frontend/PWA.
+- Tab yang dibuat otomatis: Absensi, Inventaris, Stock, Penjualan, Keuangan.
+
+LANGKAH 1 - Buat Apps Script
+1. Buka https://script.google.com/
+2. Klik New project.
+3. Hapus isi file Code.gs bawaan.
+4. Salin semua isi file:
+   apps-script/Code.gs
+5. Tempel ke editor Apps Script.
+6. Klik Save.
+
+LANGKAH 2 - Deploy sebagai Web App
+1. Klik Deploy > New deployment.
+2. Klik ikon gear / Select type, pilih Web app.
+3. Description: ABU ADZKA Dashboard API
+4. Execute as: Me
+5. Who has access: Anyone
+6. Klik Deploy.
+7. Izinkan permission Google Sheets dan Google Drive.
+8. Salin Web app URL yang berakhir dengan /exec.
+
+LANGKAH 3 - Hubungkan dashboard ke Apps Script
+1. Buka file config.js.
+2. Isi APPS_SCRIPT_URL dengan Web app URL.
+3. Ubah ONLINE_MODE menjadi true.
+
+Contoh:
+window.ABU_ADZKA_CONFIG = {
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxxxx/exec",
+  ONLINE_MODE: true
+};
+
+LANGKAH 4 - Upload ulang ke GitHub
+Upload file terbaru ini ke repository GitHub Pages:
+- index.html
+- config.js
+- app.js
+- styles.css
+- manifest.webmanifest
+- service-worker.js
+- assets/
+- icons/
+- apps-script/Code.gs
+- GOOGLE-SHEETS-SETUP.txt
+
+Catatan:
+- Saat ONLINE_MODE false, aplikasi tetap berjalan offline/localStorage.
+- Saat ONLINE_MODE true, data akan disimpan dan dibaca dari Google Sheets.
+- Foto absensi dikirim ke Google Drive dan link fotonya disimpan di Sheets.
+- Untuk pilot project, ini cukup murah dan praktis karena memakai akun Google.

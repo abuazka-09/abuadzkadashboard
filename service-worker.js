@@ -1,10 +1,13 @@
-const CACHE_NAME = "abu-adzka-dashboard-v1";
+const CACHE_NAME = "abu-adzka-dashboard-v3";
 const APP_SHELL = [
   "./",
   "./index.html",
+  "./config.js",
   "./styles.css",
   "./app.js",
   "./manifest.webmanifest",
+  "./GOOGLE-SHEETS-SETUP.txt",
+  "./README-PWA.txt",
   "./assets/abu-adzka-logo.png",
   "./assets/abu-adzka-logo-presentasi.jpg",
   "./icons/icon-192.png",
