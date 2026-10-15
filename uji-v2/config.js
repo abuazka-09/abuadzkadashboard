@@ -1,2 +1,4 @@
-// Isi hanya URL deployment V2 yang telah diuji. Jangan gunakan endpoint versi lama.
-window.AA_GOOGLE_CONFIG={endpoint:'',ownerEmail:'abuazka1510@gmail.com'};
+window.AA_GOOGLE_CONFIG = {
+  endpoint: 'https://script.google.com/macros/s/AKfycbwgrYD1UYhUj7Fr55P2OBS424WWHP-oQnofL9glspPoU3h0JjWEGFpbQVhzayUPM66gDw/exec',
+  ownerEmail: 'abuazka1510@gmail.com'
+};
