@@ -13,37 +13,7 @@ const titles = {
   finance: "Laporan Keuangan"
 };
 
-const starterData = {
-  attendance: [
-    { id: 1, name: "Andi Pratama", division: "IT Support", date: "2026-06-07", status: "Hadir", in: "08:02", out: "17:00", photo: "", note: "Tepat waktu" },
-    { id: 2, name: "Siti Aisyah", division: "Finance", date: "2026-06-07", status: "Hadir", in: "07:58", out: "17:04", photo: "", note: "Produktif" },
-    { id: 3, name: "Budi Santoso", division: "Warehouse", date: "2026-06-07", status: "Izin", in: "-", out: "-", photo: "", note: "Urusan keluarga" },
-    { id: 4, name: "Dewi Lestari", division: "Admin", date: "2026-06-07", status: "Hadir", in: "08:15", out: "17:05", photo: "", note: "Terlambat 15 menit" }
-  ],
-  inventory: [
-    { id: 1, item: "Laptop Dell XPS 13", code: "INV-001", owner: "IT", location: "Ruang Server", condition: "Baik", value: 18500000 },
-    { id: 2, item: "Proyektor Epson EB-X51", code: "INV-002", owner: "Marketing", location: "Meeting Room", condition: "Baik", value: 7200000 },
-    { id: 3, item: "Meja Direktur Premium", code: "INV-003", owner: "Owner", location: "Office 1", condition: "Baik", value: 9800000 },
-    { id: 4, item: "Printer LaserJet Pro", code: "INV-004", owner: "Admin", location: "Front Office", condition: "Perawatan", value: 4100000 }
-  ],
-  stock: [
-    { id: 1, item: "Mouse Wireless", sku: "STK-101", category: "Aksesoris", qty: 5, min: 10, unit: "Unit", supplier: "TechnoMart" },
-    { id: 2, item: "Keyboard Mechanical", sku: "STK-102", category: "Aksesoris", qty: 8, min: 12, unit: "Unit", supplier: "DigiSupply" },
-    { id: 3, item: "Kertas A4 Premium", sku: "STK-103", category: "ATK", qty: 58, min: 30, unit: "Rim", supplier: "PaperOne" },
-    { id: 4, item: "Tinta Printer Hitam", sku: "STK-104", category: "ATK", qty: 14, min: 8, unit: "Botol", supplier: "OfficeHub" }
-  ],
-  sales: [
-    { id: 1, saleId: "INV-2026-001", productDesc: "Dashboard Custom Premium", vendorName: "Markaz Dakwah Digital", hpp: 8500000, sellPrice: 15000000, volume: 2, totalSales: 30000000, vendorPayment: 17000000, balance: 13000000 },
-    { id: 2, saleId: "INV-2026-002", productDesc: "Paket PWA Company Profile", vendorName: "Creative Partner", hpp: 3200000, sellPrice: 6500000, volume: 3, totalSales: 19500000, vendorPayment: 9600000, balance: 9900000 },
-    { id: 3, saleId: "INV-2026-003", productDesc: "Maintenance Dashboard Bulanan", vendorName: "Internal Team", hpp: 1200000, sellPrice: 3500000, volume: 4, totalSales: 14000000, vendorPayment: 4800000, balance: 9200000 }
-  ],
-  finance: [
-    { id: 1, date: "2026-06-01", type: "Pemasukan", category: "Project Dashboard", desc: "DP dashboard custom", amount: 45000000 },
-    { id: 2, date: "2026-06-03", type: "Pengeluaran", category: "Operasional", desc: "Lisensi software desain", amount: 6200000 },
-    { id: 3, date: "2026-06-05", type: "Pemasukan", category: "Maintenance", desc: "Retainer bulanan", amount: 18000000 },
-    { id: 4, date: "2026-06-06", type: "Pengeluaran", category: "Gaji", desc: "Payroll tim kreatif", amount: 13500000 }
-  ]
-};
+const starterData = {attendance:[],inventory:[],stock:[],sales:[],finance:[]};
 
 let state = Object.fromEntries(Object.keys(starterData).map(k=>[k,[]]));
 let currentUser = null;
@@ -121,18 +91,7 @@ function renderDashboard() {
   $("#metricStock").textContent = stockTotal.toLocaleString("id-ID");
   $("#metricProfit").textContent = shortMoney(income - expense);
 
-  $("#activityList").innerHTML = [
-    ["Karyawan baru ditambahkan", "Andi Pratama bergabung sebagai Staff IT", "2 jam lalu"],
-    ["Inventaris diperbarui", "Laptop Dell XPS 13 ditambahkan", "5 jam lalu"],
-    ["Stock barang masuk", "58 rim Kertas A4 Premium tersedia", "1 hari lalu"],
-    ["Laporan keuangan dibuat", "Laporan Juni 2026 berhasil disimpan", "2 hari lalu"]
-  ].map((item, index) => `
-    <div class="activity-item">
-      <div class="activity-icon">${["HR", "INV", "STK", "FIN"][index]}</div>
-      <div><strong>${item[0]}</strong><small>${item[1]}</small></div>
-      <small>${item[2]}</small>
-    </div>
-  `).join("");
+  $("#activityList").innerHTML = "<p>Belum ada data aktivitas.</p>";
 
   const lowRows = state.stock.filter((row) => Number(row.qty) <= Number(row.min)).slice(0, 4);
   $("#lowStockList").innerHTML = lowRows.map((row) => `
