@@ -1,4 +1,6 @@
 const credentials = {
+ Marketing:{label:"Marketing",canEdit:false,canInput:false},
+ "CRM & Ads":{label:"CRM & Ads",canEdit:false,canInput:false},
  Owner:{label:"Pemilik Usaha",canEdit:true,canInput:true},
  Admin:{label:"Administrator",canEdit:true,canInput:true},
  Staf:{label:"Staf Operasional",canEdit:false,canInput:true}
