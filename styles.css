@@ -74,10 +74,12 @@ button { cursor: pointer; }
   color: white;
   overflow: hidden;
   position: relative;
-  background:
-    radial-gradient(circle at 78% 24%, rgba(215, 164, 75, .22), transparent 28%),
-    radial-gradient(circle at 18% 8%, rgba(49, 104, 255, .18), transparent 28%),
-    linear-gradient(145deg, rgba(7, 17, 31, .98), rgba(10, 35, 68, .94));
+  background-color: #07111f;
+  background-image:
+    linear-gradient(180deg, rgba(7, 17, 31, .12), rgba(7, 17, 31, .16)),
+    url('assets/login-background.jpeg');
+  background-size: cover;
+  background-position: center 43%;
   box-shadow: 0 30px 90px rgba(6, 15, 32, .38);
 }
 
@@ -85,9 +87,7 @@ button { cursor: pointer; }
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(90deg, rgba(7, 17, 31, .78), rgba(7, 17, 31, .26)),
-    linear-gradient(135deg, rgba(255, 255, 255, .04), transparent 38%);
+  background: linear-gradient(180deg, rgba(7, 17, 31, .10), transparent 38%, rgba(7, 17, 31, .15));
 }
 
 .login-brand,
@@ -1016,3 +1016,7 @@ body.dark .donut::before { background: #111f36; }
   .metric-card { min-height: 122px; }
   .primary-btn.small { padding-inline: 11px; }
 }
+
+/* Keep the login artwork legible without promotional copy layered over it. */
+.login-stage { background-position: center 43%; }
+@media (max-width: 620px) { .login-stage { background-position: center 42%; } }
