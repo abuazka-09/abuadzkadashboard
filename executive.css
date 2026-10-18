@@ -11,3 +11,6 @@ body.dark .executive-panel,body.dark .topbar{background:linear-gradient(145deg,#
 .line-chart .gold-icon{width:36px;height:36px}.line-chart:has(.chart-empty){height:auto;min-height:220px}.line-chart .chart-empty{margin:0;height:220px}.line-chart .chart-empty strong{font-size:13px}
 
 .top-actions .header-user{order:5}.top-actions #liveClock{order:4}.top-actions #exportBtn{order:2}.top-actions #themeToggle{order:1}@media(max-width:520px){.top-actions #liveClock{order:6}}
+
+.period-range{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-items:end;min-width:min(100%,340px)}.period-range>span{grid-column:1/-1}.period-range label{display:grid;gap:3px;font-size:11px}.period-range input[type=date]{width:100%;min-width:0;padding:7px 8px;border-radius:9px}.period-range .table-btn{grid-column:1/-1;justify-self:end;padding:7px 12px}@media(max-width:520px){.month-select.period-range{max-width:none;width:100%;grid-template-columns:1fr 1fr}.period-range label{font-size:10px}}
+body.dark .period-range input[type=date]{color-scheme:dark;background:#10213a;color:#edf4ff}

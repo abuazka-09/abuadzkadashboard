@@ -1020,3 +1020,7 @@ body.dark .donut::before { background: #111f36; }
 /* Keep the login artwork legible without promotional copy layered over it. */
 .login-stage { background-position: center 43%; }
 @media (max-width: 620px) { .login-stage { background-position: center 42%; } }
+
+select, option { color: #081329; background-color: #ffffff; }
+body.dark select, body.dark input, body.dark option { color-scheme: dark; color: #edf4ff; background-color: #10213a; }
+body.dark option { background-color: #10213a; color: #edf4ff; }
