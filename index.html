@@ -21,10 +21,10 @@
 <link rel="manifest" href="manifest.webmanifest">
 <style>
 /* Preserve the supplied artwork, with no added frame or cropping. */
-.login-brand img,.brand-lockup img,.sidebar img[src="logo-2026.svg"],.hologram img{object-fit:contain;border:0;border-radius:0;box-shadow:none;background:transparent}
+.login-brand img,.brand-lockup img,.sidebar img[src="logo-2026.svg"],.hologram img{object-fit:contain;border:0;border-radius:0;box-shadow:none;background:transparent;transform:none}
 .login-stage{background:#4169e1;display:flex;align-items:center;justify-content:center;min-height:460px;padding:32px}
 .login-stage::before,.login-brand,.orbital-card{display:none}
-.login-visual{position:static;inset:auto;perspective:none;width:100%;height:auto}
+.login-visual{display:block;position:static;inset:auto;perspective:none;width:100%;height:auto}
 .hologram{position:static;width:clamp(180px,24vw,290px);height:auto;aspect-ratio:1;margin:auto;transform:none;filter:none;opacity:1}
 .brand-preview{display:inline-flex;padding:0;border:0;background:transparent;cursor:pointer;color:inherit;align-items:center;justify-content:center}
 .brand-preview:focus-visible{outline:2px solid #d7a44b;outline-offset:5px;border-radius:4px}
