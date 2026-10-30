@@ -56,7 +56,7 @@ if(typeof document!=='undefined')(function(){
   }
   if(type==='transaction'){
    const t=serverState.transactions.find(x=>x.id===rid),p=serverState.payments.find(x=>x.tx===rid),ls=serverState.ledger.filter(l=>l.tx===rid),primary=ls.find(l=>l.delta<0)||ls[0];
-   let body=field('date','Tanggal','date',t.date)+field('account','Akun kas / bank','',primary?.account||'',list('account').map(x=>[x.id,x.name]));
+   let body=field('date','Tanggal','date',t.date)+field('account','Akun kas / bank','',primary?.account||'',list('account').map(x=>[x.id,nameOf(x.id)]));
    if(p){body+=field('method','Metode pembayaran','',p.method,['DP','Cash','Transfer Bank','Qris','E-Wallet','Cicilan','Pelunasan']);for(const a of serverState.allocations.filter(x=>x.payment===p.id)){const b=serverState.bills.find(x=>x.id===a.bill);body+=field('allocation_'+a.bill,'Alokasi '+(b?.number||a.bill)+' (Rp)','number',a.amount).replace('name="allocation_', 'data-record-allocation="'+safe(a.bill)+'" name="allocation_');}}
    else body+=field('kind','Jenis transaksi','',t.kind,Object.entries(labels).filter(([k])=>!['receipt','debt_payment','reversal'].includes(k)))+field('party','Pihak','',t.party||'',selects('party','Tanpa pihak'),false)+field('category','Kategori','',t.category||'',selects('category','Tanpa kategori'),false)+field('amount','Nominal (Rp)','number',t.amount)+field('target','Akun tujuan (transfer)','',ls.find(l=>l.delta>0&&l.account!==primary?.account)?.account||'',selects('account','Tidak berlaku'),false);
    body+=field('note','Catatan','text',t.note,null,false)+'<p class="full muted">Simpan memperbarui transaksi, alokasi dan saldo terkait dalam satu proses. Riwayat koreksi tetap dicatat.</p>';
