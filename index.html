@@ -30,6 +30,13 @@
 #brandSplash.leaving{opacity:0;pointer-events:none}
 @media(max-width:620px){#brandSplash img{width:24vw;min-width:120px;max-width:220px}}
 @media(prefers-reduced-motion:reduce){#brandSplash{transition:none}}
+
+/* Login always uses the original dark palette, independent of dashboard theme. */
+body:has(#loginScreen:not(.hidden)){--text:#edf4ff;--muted:#9eb1d0;--line:rgba(205,220,255,.12);background:radial-gradient(circle at 10% 0%,rgba(49,104,255,.28),transparent 34%),radial-gradient(circle at 82% 20%,rgba(215,164,75,.18),transparent 28%),linear-gradient(135deg,#050b15 0%,#0c1729 48%,#0f1d35 100%)}
+#loginScreen{--text:#edf4ff;--muted:#9eb1d0;--line:rgba(205,220,255,.12);color:var(--text);color-scheme:dark}
+#loginScreen .login-panel,#loginScreen input,#loginScreen select{color:var(--text);background:linear-gradient(145deg,rgba(13,27,50,.88),rgba(18,37,68,.68));border-color:rgba(255,255,255,.12)}
+#loginScreen input::placeholder{color:#9eb1d0}
+#loginScreen input:autofill{box-shadow:0 0 0 1000px #1c2c48 inset;color:#edf4ff;-webkit-text-fill-color:#edf4ff}
 </style>
 </head>
 <body>
