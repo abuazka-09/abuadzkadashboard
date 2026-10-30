@@ -1,6 +1,6 @@
 /* Pure read model. No demo values; missing inputs stay null. */
 var ExecutiveModel=(function(){
-const sources=['Google Ads','Meta Ads','TikTok Ads','Website','Referral','Offline','Lainnya'];
+const sources=['Google Ads','IG Ads','FB Ads','Meta Ads','TikTok Ads','Website','Referral','Broadcast WhatsApp','Group WhatsApp','Offline','Lainnya'];
 const stages=['Lead','Prospek','Penawaran','Pemesanan','Dikerjakan','Selesai','Tidak lanjut'];
 function build(s,from,to,today){
  if(arguments.length===3){today=to;to=from+'-31';from=from+'-01';}
