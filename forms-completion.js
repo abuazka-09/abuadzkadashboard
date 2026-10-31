@@ -1,0 +1,15 @@
+/* Contextual input entry points reuse the existing server commands and role gates. */
+(function(){
+ const hasMenu=name=>currentUser?.role==='Owner'||(currentUser?.menus||[]).includes(name);
+ function clientForm(){return form('party','Tambah Klien',field('name','Nama klien / perusahaan')+'<input type="hidden" name="type" value="Klien">'+field('phone','Telepon / WhatsApp','tel','',null,false)+field('email','Email','email','',null,false)+field('address','Alamat','text','',null,false)+field('note','Catatan kebutuhan / hubungan usaha','text','',null,false)+'<p class="full muted">Menyimpan identitas klien. Nilai pesanan diisi melalui Transaksi & Pemesanan; penerimaan pembayaran dicatat di Laporan Keuangan.</p>','Simpan klien',admin()&&hasMenu('clients'));}
+ function leadForm(){return growthForm('lead').replace('<h3>Tambah Lead</h3>','<h3>Tambah Lead / Prospek</h3>');}
+ const priorClients=clients;
+ clients=function(){return '<div class="data-layout" data-client-inputs>'+clientForm()+leadForm()+'</div>'+priorClients();};
+ const priorOverview=overview;
+ overview=function(){const result=priorOverview();if(currentUser?.role!=='Owner')return result;const target=(serverState.targets||[]).find(t=>t.active!==false&&t.month===executiveMonth);let targetHtml=growthForm('target',target||{}).replace(/<h3>[^<]*<\/h3>/,'<h3>Atur Target Bulanan</h3>');if(target)targetHtml=targetHtml.replace('data-new="target"','data-new="target" data-entity-id="'+safe(target.id)+'" data-version="'+safe(target.version)+'"');return result+'<section data-owner-inputs><h3>Input pengelolaan usaha</h3><p class="muted">Target bulanan dan keputusan Owner menjadi sumber data dashboard. Angka omzet, kas, hutang dan piutang mengikuti transaksi yang tersimpan.</p><div class="data-layout">'+targetHtml+growthForm('decision')+'</div></section>';};
+ function salesOrderForm(){const holder=document.createElement('div');holder.innerHTML=orderPage();const source=holder.querySelector('form[data-new="order"]');if(!source)return '';const article=source.closest('article');article.querySelector('h3').textContent='Input Penjualan / Pemesanan';const allowed=hasMenu('orders')&&!['Marketing','CRM & Ads'].includes(currentUser.role);source.querySelector('fieldset').disabled=!allowed;const note=document.createElement('p');note.className='muted';note.textContent=allowed?'Penjualan dicatat sebagai pesanan dan muncul di Transaksi & Pemesanan, Data Base Klien, serta omzet dashboard. Catat DP atau pelunasan di Laporan Keuangan.':'Input pemesanan memerlukan hak akses Transaksi & Pemesanan. Hubungi Owner untuk pengaturan akses.';article.append(note);return '<section data-sales-input>'+article.outerHTML+'</section>';}
+ const priorRender=render;
+ render=function(){priorRender();if(!currentUser||!serverState)return;if(activeView==='sales'&&!document.querySelector('#view-sales [data-sales-input]'))document.querySelector('#view-sales').insertAdjacentHTML('afterbegin',salesOrderForm());};
+ /* Keep input entry points discoverable without inventing entries in the audit log. */
+ if(currentUser&&serverState)render();
+})();
